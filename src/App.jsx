@@ -1,7 +1,7 @@
 import { useState } from "react";
 export default function App() {
   const [todoList, setTodoList] = useState(initialTODO);
-
+  const [nextIndex, setNextIndex] = useState(3);
   // event handler for todo item delete
   function handleDeleteClick(deleteId) {
     setTodoList(todoList.filter((todo) => todo.id !== deleteId));
@@ -32,10 +32,20 @@ export default function App() {
     );
   }
 
+  // event handler for submit form
+  // to create new todo
+  function handleOnSubmit(description) {
+    setTodoList([
+      ...todoList,
+      { desc: description, id: nextIndex, done: false },
+    ]);
+    setNextIndex(nextIndex + 1);
+  }
+
   return (
     <>
       <h1>TODO LIST</h1>
-      <AddTodoBar />
+      <AddTodoBar handleOnSubmit={handleOnSubmit} />
       {todoList.map((todo) => (
         <TodoItem
           todo={todo}
@@ -49,12 +59,18 @@ export default function App() {
   );
 }
 
-function AddTodoBar() {
+function AddTodoBar({ handleOnSubmit }) {
   return (
-    <>
-      <input placeholder="Add new TODO"></input>
-      <button>Add</button>
-    </>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleOnSubmit(e.target[0].value);
+      }}
+      name="newTodoForm"
+    >
+      <input placeholder="Add new TODO" name="newTodo"></input>
+      <input type="submit" value="Add" name="addButton"></input>
+    </form>
   );
 }
 
@@ -75,6 +91,7 @@ function TodoItem({
       {!editMode ? (
         <>
           <label>{todo.desc}</label>
+          {"       "}
           <button type="button" onClick={() => setEditMode(true)}>
             Edit
           </button>
@@ -104,7 +121,7 @@ function TodoItem({
 }
 
 const initialTODO = [
-  { desc: "Clean Room", done: false, id: 1 },
-  { desc: "Read for 15 Minutes", done: true, id: 2 },
-  { desc: "Drink a cup of water", done: false, id: 3 },
+  { desc: "Clean Room", done: false, id: 0 },
+  { desc: "Read for 15 Minutes", done: true, id: 1 },
+  { desc: "Drink a cup of water", done: false, id: 2 },
 ];
