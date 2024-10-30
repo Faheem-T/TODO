@@ -1,14 +1,31 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { AddTodoBar } from "../AddTodoBar";
+import { TodoItem } from "../TodoItem";
+
 export default function App() {
-  const [todoList, setTodoList] = useState(initialTODO);
-  const [nextIndex, setNextIndex] = useState(3);
+  // getting the todo list from local storage
+  const storedTODO = JSON.parse(localStorage.getItem("todos"));
+
+  // getting the initial index from the last item in local storage
+  const initialNextIndex = storedTODO.at(-1).id + 1;
+
+  const [todoList, setTodoList] = useState(storedTODO);
+  const [nextIndex, setNextIndex] = useState(initialNextIndex);
   const inputRef = useRef(null);
+
+  // updating the local storage whenever the
+  // todoList state changes
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todoList));
+  }, [todoList]);
+
   // event handler for todo item delete
   function handleDeleteClick(deleteId) {
     setTodoList(todoList.filter((todo) => todo.id !== deleteId));
   }
 
-  // event handler for "check"ing todo items
+  // event handler for marking a todo as done
   function handleDoneClick(todoId) {
     setTodoList(
       todoList.map((todo) => {
@@ -49,7 +66,7 @@ export default function App() {
     }
     setTodoList([
       ...todoList,
-      { desc: description, id: nextIndex, done: false },
+      { desc: description, done: false, id: nextIndex },
     ]);
     setNextIndex(nextIndex + 1);
   }
@@ -72,90 +89,3 @@ export default function App() {
     </>
   );
 }
-
-function AddTodoBar({ handleOnSubmit, inputRef }) {
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleOnSubmit(e.target[0].value);
-      }}
-      name="newTodoForm"
-      className="newTodoForm"
-      ref={inputRef}
-    >
-      <input placeholder="Create TODO" name="newTodo"></input>
-      <button type="submit" value="Add" name="addButton">
-        <i className="fa-solid fa-plus"></i>
-      </button>
-    </form>
-  );
-}
-
-function TodoItem({
-  todo,
-  handleDeleteClick,
-  handleDoneClick,
-  handleDescChange,
-}) {
-  const [editMode, setEditMode] = useState(false);
-  return (
-    <div className="todoItem">
-      <input
-        type="checkbox"
-        className="todoCheck"
-        checked={todo.done}
-        onChange={() => handleDoneClick(todo.id)}
-      ></input>
-      {!editMode ? (
-        <>
-          {todo.done ? (
-            <del>
-              <label>{todo.desc}</label>
-            </del>
-          ) : (
-            <label>{todo.desc}</label>
-          )}
-          {"       "}
-          <button
-            className="editButton"
-            type="button"
-            onClick={() => setEditMode(true)}
-          >
-            <i className="fa-solid fa-pen"></i>
-          </button>
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            value={todo.desc}
-            onChange={(e) => handleDescChange(e, todo.id)}
-          />
-          <button
-            className="saveButton"
-            type="button"
-            onClick={() => {
-              setEditMode(false);
-            }}
-          >
-            <i className="fa-regular fa-floppy-disk"></i>
-          </button>
-        </>
-      )}
-      <button
-        className="deleteButton"
-        type="button"
-        onClick={() => handleDeleteClick(todo.id)}
-      >
-        <i className="fa-regular fa-trash-can"></i>
-      </button>
-    </div>
-  );
-}
-
-const initialTODO = [
-  { desc: "Clean Room", done: false, id: 0 },
-  { desc: "Read for 15 Minutes", done: true, id: 1 },
-  { desc: "Drink a cup of water", done: false, id: 2 },
-];
