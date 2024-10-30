@@ -1,0 +1,105 @@
+:root {
+  --background: #010104;
+  --text: #ebe9fc;
+  --primary: #9d31d8;
+  --primary-dark: #70229b;
+  --primary-light: #9e52c7;
+  --secondary: #44406e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Ubuntu", sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+button {
+  border-radius: 10px;
+  padding: 0.5em;
+  margin: 5px;
+  width: 10%;
+  background-color: var(--primary);
+  color: white;
+  border: solid transparent 1px;
+  transition: all, 0.2s, smooth;
+}
+
+button:hover {
+  box-shadow: 0px 0px 20px 0.5px var(--primary-light);
+  transform: translate(0, -1px);
+
+  /* border: solid black 1px; */
+}
+
+button:active {
+  background-color: var(--primary-dark);
+}
+
+input {
+  border-radius: 10px;
+  padding: 5px;
+  background-color: white;
+  /* background-color: var(--secondary); */
+  color: black;
+  border: none;
+}
+
+input:focus {
+  box-shadow: 0px 0px 20px 0.5px var(--primary-light);
+  border: none;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 3rem;
+  margin-bottom: auto;
+  margin-top: 50px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.todoItem {
+  width: 100%;
+  padding: 5px;
+  align-self: start;
+  display: flex;
+  align-items: center;
+}
+
+.editButton,
+.saveButton {
+  margin-left: auto;
+}
+
+.todoCheck {
+  margin-right: 4px;
+}
+
+.newTodoForm {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  padding: 20px;
+  width: 60%;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: auto;
+}

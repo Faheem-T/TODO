@@ -45,16 +45,18 @@ export default function App() {
   return (
     <>
       <h1>TODO LIST</h1>
-      <AddTodoBar handleOnSubmit={handleOnSubmit} />
-      {todoList.map((todo) => (
-        <TodoItem
-          todo={todo}
-          key={todo.id}
-          handleDeleteClick={handleDeleteClick}
-          handleDoneClick={handleDoneClick}
-          handleDescChange={handleDescChange}
-        />
-      ))}
+      <div className="container">
+        <AddTodoBar handleOnSubmit={handleOnSubmit} />
+        {todoList.map((todo) => (
+          <TodoItem
+            todo={todo}
+            key={todo.id}
+            handleDeleteClick={handleDeleteClick}
+            handleDoneClick={handleDoneClick}
+            handleDescChange={handleDescChange}
+          />
+        ))}
+      </div>
     </>
   );
 }
@@ -67,9 +69,12 @@ function AddTodoBar({ handleOnSubmit }) {
         handleOnSubmit(e.target[0].value);
       }}
       name="newTodoForm"
+      className="newTodoForm"
     >
-      <input placeholder="Add new TODO" name="newTodo"></input>
-      <input type="submit" value="Add" name="addButton"></input>
+      <input placeholder="Create TODO" name="newTodo"></input>
+      <button type="submit" value="Add" name="addButton">
+        <i class="fa-solid fa-plus"></i>
+      </button>
     </form>
   );
 }
@@ -82,18 +87,29 @@ function TodoItem({
 }) {
   const [editMode, setEditMode] = useState(false);
   return (
-    <div>
+    <div className="todoItem">
       <input
         type="checkbox"
+        className="todoCheck"
         checked={todo.done}
         onChange={() => handleDoneClick(todo.id)}
       ></input>
       {!editMode ? (
         <>
-          <label>{todo.desc}</label>
+          {todo.done ? (
+            <del>
+              <label>{todo.desc}</label>
+            </del>
+          ) : (
+            <label>{todo.desc}</label>
+          )}
           {"       "}
-          <button type="button" onClick={() => setEditMode(true)}>
-            Edit
+          <button
+            className="editButton"
+            type="button"
+            onClick={() => setEditMode(true)}
+          >
+            <i class="fa-solid fa-pen"></i>
           </button>
         </>
       ) : (
@@ -104,17 +120,22 @@ function TodoItem({
             onChange={(e) => handleDescChange(e, todo.id)}
           />
           <button
+            className="saveButton"
             type="button"
             onClick={() => {
               setEditMode(false);
             }}
           >
-            Save
+            <i class="fa-regular fa-floppy-disk"></i>
           </button>
         </>
       )}
-      <button type="button" onClick={() => handleDeleteClick(todo.id)}>
-        Delete
+      <button
+        className="deleteButton"
+        type="button"
+        onClick={() => handleDeleteClick(todo.id)}
+      >
+        <i className="fa-regular fa-trash-can"></i>
       </button>
     </div>
   );
