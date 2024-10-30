@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 export default function App() {
   const [todoList, setTodoList] = useState(initialTODO);
   const [nextIndex, setNextIndex] = useState(3);
+  const inputRef = useRef(null);
   // event handler for todo item delete
   function handleDeleteClick(deleteId) {
     setTodoList(todoList.filter((todo) => todo.id !== deleteId));
@@ -35,6 +36,17 @@ export default function App() {
   // event handler for submit form
   // to create new todo
   function handleOnSubmit(description) {
+    // clearing form on submit
+    inputRef.current.reset();
+
+    // form validation
+    // checking if empty
+    if (!description) return;
+    // checking for duplication
+    if (todoList.find((todo) => todo.desc === description)) {
+      console.log("Duplicate!");
+      return;
+    }
     setTodoList([
       ...todoList,
       { desc: description, id: nextIndex, done: false },
@@ -46,7 +58,7 @@ export default function App() {
     <>
       <h1>TODO LIST</h1>
       <div className="container">
-        <AddTodoBar handleOnSubmit={handleOnSubmit} />
+        <AddTodoBar handleOnSubmit={handleOnSubmit} inputRef={inputRef} />
         {todoList.map((todo) => (
           <TodoItem
             todo={todo}
@@ -61,7 +73,7 @@ export default function App() {
   );
 }
 
-function AddTodoBar({ handleOnSubmit }) {
+function AddTodoBar({ handleOnSubmit, inputRef }) {
   return (
     <form
       onSubmit={(e) => {
@@ -70,10 +82,11 @@ function AddTodoBar({ handleOnSubmit }) {
       }}
       name="newTodoForm"
       className="newTodoForm"
+      ref={inputRef}
     >
       <input placeholder="Create TODO" name="newTodo"></input>
       <button type="submit" value="Add" name="addButton">
-        <i class="fa-solid fa-plus"></i>
+        <i className="fa-solid fa-plus"></i>
       </button>
     </form>
   );
@@ -109,7 +122,7 @@ function TodoItem({
             type="button"
             onClick={() => setEditMode(true)}
           >
-            <i class="fa-solid fa-pen"></i>
+            <i className="fa-solid fa-pen"></i>
           </button>
         </>
       ) : (
@@ -126,7 +139,7 @@ function TodoItem({
               setEditMode(false);
             }}
           >
-            <i class="fa-regular fa-floppy-disk"></i>
+            <i className="fa-regular fa-floppy-disk"></i>
           </button>
         </>
       )}
